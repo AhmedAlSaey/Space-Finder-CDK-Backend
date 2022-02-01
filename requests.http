@@ -1,4 +1,51 @@
 @endpoint = https://d3a4d83llb.execute-api.eu-central-1.amazonaws.com/prod
+@localendpoint = http://127.0.0.1:3000
 
 GET {{endpoint}}/hello
 ###
+
+GET {{endpoint}}/spaces?spaceId=03c020e2-f841-4fe2-b572-50b38f345c7f
+###
+
+GET {{endpoint}}/spaces?location=Cairo
+###
+
+GET {{endpoint}}/spaces
+###
+
+POST {{endpoint}}/spaces/
+Content-Type: application/json
+
+{
+    "location": "Cairo",
+    "name": "Best Location"
+}
+###
+
+PUT {{endpoint}}/spaces?spaceId=dc368a93-c80d-465e-b988-4781f19f251e
+Content-Type: application/json
+
+{
+    "location": "New Cairo"
+}
+###
+
+POST {{endpoint}}/spaces?spaceId=03c020e2-f841-4fe2-b572-50b38f345c7f
+Content-Type: application/json
+
+{
+    "location": "Newest Cairo",
+    "name": "Best Location"
+}
+###
+
+
+DELETE {{endpoint}}/spaces?spaceId=dc368a93-c80d-465e-b988-4781f19f251e
+Content-Type: application/json
+
+{
+    "location": "Newest Cairo",
+    "name": "Best Location"
+}
+###
+
