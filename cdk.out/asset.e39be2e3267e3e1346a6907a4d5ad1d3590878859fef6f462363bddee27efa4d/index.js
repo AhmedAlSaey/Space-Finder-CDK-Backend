@@ -21,48 +21,32 @@ var __toCommonJS = /* @__PURE__ */ ((cache) => {
   };
 })(typeof WeakMap !== "undefined" ? /* @__PURE__ */ new WeakMap() : 0);
 
-// services/SpaceTable/Read.ts
-var Read_exports = {};
-__export(Read_exports, {
+// services/node-lamda/hello.ts
+var hello_exports = {};
+__export(hello_exports, {
   handler: () => handler
 });
-var import_aws_sdk = require("aws-sdk");
-var TABLE_NAME = process.env.TABLE_NAME;
-var PRIMARY_KEY = process.env.PRIMARY_KEY;
-var dbClient = new import_aws_sdk.DynamoDB.DocumentClient();
 async function handler(event, context) {
-  const result = {
-    statusCode: 200,
-    body: "Hello from DynamoDb"
-  };
-  try {
-    if (event.queryStringParameters) {
-      if (PRIMARY_KEY in event.queryStringParameters) {
-        const keyValue = event.queryStringParameters[PRIMARY_KEY];
-        const queryResponse = await dbClient.query({
-          TableName: TABLE_NAME,
-          KeyConditionExpression: "#zz = :zzzz",
-          ExpressionAttributeNames: {
-            "#zz": PRIMARY_KEY
-          },
-          ExpressionAttributeValues: {
-            ":zzzz": keyValue
-          }
-        }).promise();
-        result.body = JSON.stringify(queryResponse);
-      }
-    } else {
-      const queryResponse = await dbClient.scan({
-        TableName: TABLE_NAME
-      }).promise();
-      result.body = JSON.stringify(queryResponse);
-    }
-  } catch (error) {
-    result.body = error.message;
+  if (isAuthorized(event)) {
+    return {
+      statusCode: 200,
+      body: "Hello, admin!"
+    };
   }
-  return result;
+  return {
+    statusCode: 200,
+    body: "Hello, peasant!"
+  };
 }
-module.exports = __toCommonJS(Read_exports);
+var isAuthorized = (event) => {
+  var _a;
+  const group = (_a = event.requestContext.authorizer) == null ? void 0 : _a.claims["cognito:groups"];
+  if (group) {
+    return group.includes("admin");
+  }
+  return false;
+};
+module.exports = __toCommonJS(hello_exports);
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   handler

@@ -1,16 +1,25 @@
+import { APIGatewayProxyEvent } from "aws-lambda";
+import { SayHi, SayHey } from "../library";
 
-import {S3} from 'aws-sdk'
-
-const s3Client = new S3()
-
-async function handler (event: any, context: any) {
-    const buckets = await s3Client.listBuckets().promise()
-    console.log("Got an event:")
-    console.log(event)
+async function handler(event: any, context: any) {
+  if (isAuthorized(event)) {
     return {
-        statusCode: 200,
-        body: 'Here are your buckets: ' + JSON.stringify(buckets)
-    }
+      statusCode: 200,
+      body: "Hello, admin!",
+    };
+  }
+  return {
+    statusCode: 200,
+    body: "Hello, peasant!",
+  };
 }
 
-export {handler}
+const isAuthorized = (event: APIGatewayProxyEvent) => {
+  const group = event.requestContext.authorizer?.claims["cognito:groups"];
+  if (group) {
+    return (group as string).includes("admin");
+  }
+  return false;
+};
+
+export { handler };

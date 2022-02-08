@@ -21,49 +21,25 @@ var __toCommonJS = /* @__PURE__ */ ((cache) => {
   };
 })(typeof WeakMap !== "undefined" ? /* @__PURE__ */ new WeakMap() : 0);
 
-// services/SpaceTable/Update.ts
-var Update_exports = {};
-__export(Update_exports, {
+// services/node-lamda/hello.ts
+var hello_exports = {};
+__export(hello_exports, {
   handler: () => handler
 });
-var import_aws_sdk = require("aws-sdk");
-var TABLE_NAME = process.env.TABLE_NAME;
-var PRIMARY_KEY = process.env.PRIMARY_KEY;
-var dbClient = new import_aws_sdk.DynamoDB.DocumentClient();
+
+// services/library.ts
+var SayHi = () => {
+  console.log("Hi!");
+};
+
+// services/node-lamda/hello.ts
 async function handler(event, context) {
-  var _a;
-  const result = {
+  return {
     statusCode: 200,
-    body: "Hello from DynamoDb"
+    body: SayHi()
   };
-  const requestBody = typeof event.body == "object" ? event.body : JSON.parse(event.body);
-  const spaceId = (_a = event.queryStringParameters) == null ? void 0 : _a[PRIMARY_KEY];
-  try {
-    if (requestBody && spaceId) {
-      const requestBodyKey = Object.keys(requestBody)[0];
-      const requestBodyValue = requestBody[requestBodyKey];
-      const updateResult = await dbClient.update({
-        TableName: TABLE_NAME,
-        Key: {
-          [PRIMARY_KEY]: spaceId
-        },
-        UpdateExpression: "set #zzzNew = :new",
-        ExpressionAttributeValues: {
-          ":new": requestBodyValue
-        },
-        ExpressionAttributeNames: {
-          "#zzzNew": requestBodyKey
-        },
-        ReturnValues: "UPDATED_NEW"
-      }).promise();
-      result.body = JSON.stringify(updateResult);
-    }
-  } catch (error) {
-    result.body = error.message;
-  }
-  return result;
 }
-module.exports = __toCommonJS(Update_exports);
+module.exports = __toCommonJS(hello_exports);
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   handler

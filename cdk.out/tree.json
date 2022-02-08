@@ -143,7 +143,7 @@
                           "Ref": "SpaceApi1B373D2B"
                         },
                         "deploymentId": {
-                          "Ref": "SpaceApiDeploymentA2B9E765f49bd601ebf1a1ed7f54c0af202a531f"
+                          "Ref": "SpaceApiDeploymentA2B9E7650a6f4916bad826b595fb6aa108ec1858"
                         },
                         "stageName": "prod"
                       }
@@ -309,7 +309,10 @@
                                 "restApiId": {
                                   "Ref": "SpaceApi1B373D2B"
                                 },
-                                "authorizationType": "NONE",
+                                "authorizationType": "COGNITO_USER_POOLS",
+                                "authorizerId": {
+                                  "Ref": "spacefinderuserauthorizerA873A84E"
+                                },
                                 "integration": {
                                   "type": "AWS_PROXY",
                                   "uri": {
@@ -1002,10 +1005,455 @@
                   "fqn": "aws-cdk-lib.aws_apigateway.ResourceBase",
                   "version": "2.10.0"
                 }
+              },
+              "space-finder-user-pool": {
+                "id": "space-finder-user-pool",
+                "path": "Space-finder/SpaceApi/space-finder-user-pool",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "Space-finder/SpaceApi/space-finder-user-pool/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Cognito::UserPool",
+                      "aws:cdk:cloudformation:props": {
+                        "accountRecoverySetting": {
+                          "recoveryMechanisms": [
+                            {
+                              "name": "verified_phone_number",
+                              "priority": 1
+                            },
+                            {
+                              "name": "verified_email",
+                              "priority": 2
+                            }
+                          ]
+                        },
+                        "adminCreateUserConfig": {
+                          "allowAdminCreateUserOnly": false
+                        },
+                        "aliasAttributes": [
+                          "email"
+                        ],
+                        "autoVerifiedAttributes": [
+                          "email"
+                        ],
+                        "emailVerificationMessage": "The verification code to your new account is {####}",
+                        "emailVerificationSubject": "Verify your new account",
+                        "smsVerificationMessage": "The verification code to your new account is {####}",
+                        "userPoolName": "space-finder-user-pool",
+                        "verificationMessageTemplate": {
+                          "defaultEmailOption": "CONFIRM_WITH_CODE",
+                          "emailMessage": "The verification code to your new account is {####}",
+                          "emailSubject": "Verify your new account",
+                          "smsMessage": "The verification code to your new account is {####}"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_cognito.CfnUserPool",
+                      "version": "2.10.0"
+                    }
+                  },
+                  "space-finder-user-pool-client": {
+                    "id": "space-finder-user-pool-client",
+                    "path": "Space-finder/SpaceApi/space-finder-user-pool/space-finder-user-pool-client",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "Space-finder/SpaceApi/space-finder-user-pool/space-finder-user-pool-client/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::Cognito::UserPoolClient",
+                          "aws:cdk:cloudformation:props": {
+                            "userPoolId": {
+                              "Ref": "SpaceApispacefinderuserpoolAB03911C"
+                            },
+                            "allowedOAuthFlows": [
+                              "implicit",
+                              "code"
+                            ],
+                            "allowedOAuthFlowsUserPoolClient": true,
+                            "allowedOAuthScopes": [
+                              "profile",
+                              "phone",
+                              "email",
+                              "openid",
+                              "aws.cognito.signin.user.admin"
+                            ],
+                            "callbackUrLs": [
+                              "https://example.com"
+                            ],
+                            "clientName": "space-finder-user-pool-client",
+                            "explicitAuthFlows": [
+                              "ALLOW_USER_PASSWORD_AUTH",
+                              "ALLOW_ADMIN_USER_PASSWORD_AUTH",
+                              "ALLOW_CUSTOM_AUTH",
+                              "ALLOW_USER_SRP_AUTH",
+                              "ALLOW_REFRESH_TOKEN_AUTH"
+                            ],
+                            "generateSecret": false,
+                            "supportedIdentityProviders": [
+                              "COGNITO"
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_cognito.CfnUserPoolClient",
+                          "version": "2.10.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_cognito.UserPoolClient",
+                      "version": "2.10.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cognito.UserPool",
+                  "version": "2.10.0"
+                }
               }
             },
             "constructInfo": {
               "fqn": "aws-cdk-lib.aws_apigateway.RestApi",
+              "version": "2.10.0"
+            }
+          },
+          "UserPoolId": {
+            "id": "UserPoolId",
+            "path": "Space-finder/UserPoolId",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.10.0"
+            }
+          },
+          "UserPoolClientId": {
+            "id": "UserPoolClientId",
+            "path": "Space-finder/UserPoolClientId",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.10.0"
+            }
+          },
+          "space-finder-user-authorizer": {
+            "id": "space-finder-user-authorizer",
+            "path": "Space-finder/space-finder-user-authorizer",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "Space-finder/space-finder-user-authorizer/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Authorizer",
+                  "aws:cdk:cloudformation:props": {
+                    "name": "space-finder-user-authorizer",
+                    "restApiId": {
+                      "Ref": "SpaceApi1B373D2B"
+                    },
+                    "type": "COGNITO_USER_POOLS",
+                    "identitySource": "method.request.header.Authorization",
+                    "providerArns": [
+                      {
+                        "Fn::GetAtt": [
+                          "SpaceApispacefinderuserpoolAB03911C",
+                          "Arn"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.CfnAuthorizer",
+                  "version": "2.10.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_apigateway.CognitoUserPoolsAuthorizer",
+              "version": "2.10.0"
+            }
+          },
+          "space-finder-identity-pool": {
+            "id": "space-finder-identity-pool",
+            "path": "Space-finder/space-finder-identity-pool",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::Cognito::IdentityPool",
+              "aws:cdk:cloudformation:props": {
+                "allowUnauthenticatedIdentities": true,
+                "cognitoIdentityProviders": [
+                  {
+                    "clientId": {
+                      "Ref": "SpaceApispacefinderuserpoolspacefinderuserpoolclientF35A9F9F"
+                    },
+                    "providerName": {
+                      "Fn::GetAtt": [
+                        "SpaceApispacefinderuserpoolAB03911C",
+                        "ProviderName"
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cognito.CfnIdentityPool",
+              "version": "2.10.0"
+            }
+          },
+          "identity-pool-id": {
+            "id": "identity-pool-id",
+            "path": "Space-finder/identity-pool-id",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.10.0"
+            }
+          },
+          "cognito-default-authenticated-role": {
+            "id": "cognito-default-authenticated-role",
+            "path": "Space-finder/cognito-default-authenticated-role",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "Space-finder/cognito-default-authenticated-role/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRoleWithWebIdentity",
+                          "Condition": {
+                            "StringEquals": {
+                              "cognito-identity.amazonaws.com:aud": {
+                                "Ref": "spacefinderidentitypool"
+                              }
+                            },
+                            "ForAnyValue:StringLike": {
+                              "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                          },
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.10.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Role",
+              "version": "2.10.0"
+            }
+          },
+          "cognito-default-unauthenticated-role": {
+            "id": "cognito-default-unauthenticated-role",
+            "path": "Space-finder/cognito-default-unauthenticated-role",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "Space-finder/cognito-default-unauthenticated-role/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRoleWithWebIdentity",
+                          "Condition": {
+                            "StringEquals": {
+                              "cognito-identity.amazonaws.com:aud": {
+                                "Ref": "spacefinderidentitypool"
+                              }
+                            },
+                            "ForAnyValue:StringLike": {
+                              "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                          },
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.10.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Role",
+              "version": "2.10.0"
+            }
+          },
+          "cognito-admin-role": {
+            "id": "cognito-admin-role",
+            "path": "Space-finder/cognito-admin-role",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "Space-finder/cognito-admin-role/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRoleWithWebIdentity",
+                          "Condition": {
+                            "StringEquals": {
+                              "cognito-identity.amazonaws.com:aud": {
+                                "Ref": "spacefinderidentitypool"
+                              }
+                            },
+                            "ForAnyValue:StringLike": {
+                              "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                          },
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.10.0"
+                }
+              },
+              "DefaultPolicy": {
+                "id": "DefaultPolicy",
+                "path": "Space-finder/cognito-admin-role/DefaultPolicy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "Space-finder/cognito-admin-role/DefaultPolicy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "s3:ListAllMyBuckets",
+                              "Effect": "Allow",
+                              "Resource": "*"
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "policyName": "cognitoadminroleDefaultPolicy19AA91FE",
+                        "roles": [
+                          {
+                            "Ref": "cognitoadminrole3D4C6680"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                      "version": "2.10.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Policy",
+                  "version": "2.10.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Role",
+              "version": "2.10.0"
+            }
+          },
+          "roles-attachment": {
+            "id": "roles-attachment",
+            "path": "Space-finder/roles-attachment",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::Cognito::IdentityPoolRoleAttachment",
+              "aws:cdk:cloudformation:props": {
+                "identityPoolId": {
+                  "Ref": "spacefinderidentitypool"
+                },
+                "roleMappings": {
+                  "adminsMapping": {
+                    "type": "Token",
+                    "ambiguousRoleResolution": "AuthenticatedRole",
+                    "identityProvider": {
+                      "Fn::Join": [
+                        "",
+                        [
+                          {
+                            "Fn::GetAtt": [
+                              "SpaceApispacefinderuserpoolAB03911C",
+                              "ProviderName"
+                            ]
+                          },
+                          ":",
+                          {
+                            "Ref": "SpaceApispacefinderuserpoolspacefinderuserpoolclientF35A9F9F"
+                          }
+                        ]
+                      ]
+                    }
+                  }
+                },
+                "roles": {
+                  "authenticated": {
+                    "Fn::GetAtt": [
+                      "cognitodefaultauthenticatedroleB5ADCDB1",
+                      "Arn"
+                    ]
+                  },
+                  "unauthenticated": {
+                    "Fn::GetAtt": [
+                      "cognitodefaultunauthenticatedrole3B63D9E7",
+                      "Arn"
+                    ]
+                  }
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cognito.CfnIdentityPoolRoleAttachment",
+              "version": "2.10.0"
+            }
+          },
+          "admins": {
+            "id": "admins",
+            "path": "Space-finder/admins",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::Cognito::UserPoolGroup",
+              "aws:cdk:cloudformation:props": {
+                "userPoolId": {
+                  "Ref": "SpaceApispacefinderuserpoolAB03911C"
+                },
+                "groupName": "admin",
+                "roleArn": {
+                  "Fn::GetAtt": [
+                    "cognitoadminrole3D4C6680",
+                    "Arn"
+                  ]
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cognito.CfnUserPoolGroup",
               "version": "2.10.0"
             }
           },
@@ -1950,7 +2398,7 @@
                       "s3Bucket": {
                         "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
                       },
-                      "s3Key": "ddd36743afc3ddd827d4f3caf182b128bf0e99fffa5d1945caeb3eb1b20fb6d4.zip"
+                      "s3Key": "e39be2e3267e3e1346a6907a4d5ad1d3590878859fef6f462363bddee27efa4d.zip"
                     },
                     "role": {
                       "Fn::GetAtt": [

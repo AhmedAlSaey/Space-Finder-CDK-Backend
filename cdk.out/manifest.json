@@ -23,7 +23,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/16f165ace0f2135510c4a9f7709d15b5c298a102b1f216cf900f0797e3b75255.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/b5fcf624b6397d767ced0e9de976372df4ee974f3dacc8828574c19698642632.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -61,7 +61,7 @@
         "/Space-finder/SpaceApi/Deployment/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "SpaceApiDeploymentA2B9E765f49bd601ebf1a1ed7f54c0af202a531f"
+            "data": "SpaceApiDeploymentA2B9E7650a6f4916bad826b595fb6aa108ec1858"
           }
         ],
         "/Space-finder/SpaceApi/DeploymentStage.prod/Resource": [
@@ -176,6 +176,84 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "SpaceApispacesDELETEC413A31B"
+          }
+        ],
+        "/Space-finder/SpaceApi/space-finder-user-pool/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SpaceApispacefinderuserpoolAB03911C"
+          }
+        ],
+        "/Space-finder/SpaceApi/space-finder-user-pool/space-finder-user-pool-client/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SpaceApispacefinderuserpoolspacefinderuserpoolclientF35A9F9F"
+          }
+        ],
+        "/Space-finder/UserPoolId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserPoolId"
+          }
+        ],
+        "/Space-finder/UserPoolClientId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserPoolClientId"
+          }
+        ],
+        "/Space-finder/space-finder-user-authorizer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "spacefinderuserauthorizerA873A84E"
+          }
+        ],
+        "/Space-finder/space-finder-identity-pool": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "spacefinderidentitypool"
+          }
+        ],
+        "/Space-finder/identity-pool-id": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "identitypoolid"
+          }
+        ],
+        "/Space-finder/cognito-default-authenticated-role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cognitodefaultauthenticatedroleB5ADCDB1"
+          }
+        ],
+        "/Space-finder/cognito-default-unauthenticated-role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cognitodefaultunauthenticatedrole3B63D9E7"
+          }
+        ],
+        "/Space-finder/cognito-admin-role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cognitoadminrole3D4C6680"
+          }
+        ],
+        "/Space-finder/cognito-admin-role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cognitoadminroleDefaultPolicy19AA91FE"
+          }
+        ],
+        "/Space-finder/roles-attachment": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "rolesattachment"
+          }
+        ],
+        "/Space-finder/admins": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "admins"
           }
         ],
         "/Space-finder/SpaceTable": [
