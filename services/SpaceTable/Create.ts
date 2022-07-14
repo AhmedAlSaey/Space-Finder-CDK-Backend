@@ -10,7 +10,7 @@ import {
   MissingFieldError,
   validateAsSpaceEntry,
 } from "../Shared/InputValidator";
-import { getEventBody } from "../Shared/Utils";
+import { getEventBody, addCorsHeader } from "../Shared/Utils";
 
 const TABLE_NAME = process.env.TABLE_NAME;
 const PRIMARY_KEY = process.env.PRIMARY_KEY;
@@ -24,6 +24,7 @@ async function handler(
     statusCode: 200,
     body: "Hello from DynamoDb",
   };
+  addCorsHeader(result);
   try {
     const item = getEventBody(event);
     item[PRIMARY_KEY!] = v4();
@@ -34,7 +35,9 @@ async function handler(
         Item: item,
       })
       .promise();
-    result.body = JSON.stringify(`Created item with ID: ${item[PRIMARY_KEY!]}`);
+    result.body = JSON.stringify({
+      id: item.spaceId,
+    });
   } catch (error) {
     if (error instanceof MissingFieldError) {
       result.statusCode = 403;

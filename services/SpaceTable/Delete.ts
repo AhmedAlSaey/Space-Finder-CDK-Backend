@@ -4,6 +4,7 @@ import {
   APIGatewayProxyResult,
   Context,
 } from "aws-lambda";
+import { addCorsHeader } from "../Shared/Utils";
 
 const TABLE_NAME = process.env.TABLE_NAME as string;
 const PRIMARY_KEY = process.env.PRIMARY_KEY as string;
@@ -17,6 +18,8 @@ async function handler(
     statusCode: 200,
     body: "Hello from DynamoDb",
   };
+  addCorsHeader(result);
+
   try {
     const spaceId = event.queryStringParameters?.[PRIMARY_KEY];
     if (spaceId) {
@@ -28,6 +31,7 @@ async function handler(
           },
         })
         .promise();
+
       result.body = JSON.stringify(deleteResult);
     }
   } catch (error) {

@@ -6,6 +6,7 @@ import {
   Context,
 } from "aws-lambda";
 import { v4 } from "uuid";
+import { addCorsHeader } from "../Shared/Utils";
 
 const TABLE_NAME = process.env.TABLE_NAME;
 const PRIMARY_KEY = process.env.PRIMARY_KEY;
@@ -19,6 +20,8 @@ async function handler(
     statusCode: 200,
     body: "Hello from DynamoDb",
   };
+  addCorsHeader(result);
+
   try {
     if (event.queryStringParameters) {
       if (PRIMARY_KEY! in event.queryStringParameters) {

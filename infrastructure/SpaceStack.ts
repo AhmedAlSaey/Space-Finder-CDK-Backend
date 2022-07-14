@@ -1,4 +1,4 @@
-import { Stack, StackProps } from "aws-cdk-lib";
+import { CfnOutput, Fn, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import {
   Code,
@@ -16,10 +16,14 @@ import { GenericTable } from "./GenericTable";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { AuthorizerWrapper } from "./auth/AuthorizerWrapper";
+import { Bucket, HttpMethods } from "aws-cdk-lib/aws-s3";
+import { WebAppDeployment } from "./WebAppDeployment";
 
 export class SpaceStack extends Stack {
   private api = new RestApi(this, "SpaceApi");
-  private authorizer = new AuthorizerWrapper(this, this.api);
+  private authorizer: AuthorizerWrapper;
+  private suffix: string;
+  private spacesPhotoBucket: Bucket;
 
   // private spacesTable = new GenericTable('SpaceTable', 'spaceId', this)
   private spacesTable = new GenericTable(this, {
@@ -34,6 +38,16 @@ export class SpaceStack extends Stack {
 
   constructor(scope: Construct, id: string, props: StackProps) {
     super(scope, id, props);
+
+    this.initializeSuffix();
+
+    this.initializeSpacesPhotosBucket();
+    this.authorizer = new AuthorizerWrapper(
+      this,
+      this.api,
+      this.spacesPhotoBucket.bucketArn + "/*"
+    );
+    // new WebAppDeployment(this, this.suffix);
 
     const helloLamdaNodeJs = new NodejsFunction(this, "helloLamdaNodeJs", {
       entry: join(__dirname, "..", "services", "node-lamda", "hello.ts"),
@@ -66,5 +80,28 @@ export class SpaceStack extends Stack {
     spaceResources.addMethod("GET", this.spacesTable.readLamdaIntegration);
     spaceResources.addMethod("PUT", this.spacesTable.updateLamdaIntegration);
     spaceResources.addMethod("DELETE", this.spacesTable.deleteLamdaIntegration);
+  }
+
+  private initializeSuffix() {
+    const shortStackId = Fn.select(2, Fn.split("/", this.stackId));
+    this.suffix = Fn.select(4, Fn.split("-", shortStackId));
+  }
+
+  private initializeSpacesPhotosBucket() {
+    this.spacesPhotoBucket = new Bucket(this, "spaces-photos", {
+      bucketName: "spaces-photos-" + this.suffix,
+      cors: [
+        {
+          // The below makes the bucket public
+          allowedMethods: [HttpMethods.HEAD, HttpMethods.GET, HttpMethods.PUT],
+          allowedOrigins: ["*"],
+          allowedHeaders: ["*"],
+        },
+      ],
+    });
+
+    new CfnOutput(this, "spaces-photos-bucket-name", {
+      value: this.spacesPhotoBucket.bucketName,
+    });
   }
 }
